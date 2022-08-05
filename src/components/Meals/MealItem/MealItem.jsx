@@ -13,10 +13,10 @@ const MealItem = (props) => {
           N
         </span>
         <div className={classes.price} style={{ display: 'inline-block' }}>
-          {props.price.toFixed(2)}
+          {props.price.toFixed(1)}
         </div>
       </div>
-      <MealItemForm />
+      <MealItemForm ID={props.ID} />
     </li>
   );
 };

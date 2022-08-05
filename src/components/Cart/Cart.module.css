@@ -2,6 +2,21 @@
   list-style: none;
   margin: 0;
   padding: 0;
+  max-height: 20rem;
+  overflow-y: auto;
+}
+
+.cart-items::-webkit-scrollbar {
+  width: 0.3em;
+}
+
+.cart-items::-webkit-scrollbar-track {
+  box-shadow: inset 0 0 6px rgba(0, 0, 0, 0.3);
+}
+
+.cart-items::-webkit-scrollbar-thumb {
+  background-color: darkgrey;
+  outline: 1px solid slategrey;
 }
 
 .total {

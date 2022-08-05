@@ -11,31 +11,31 @@ const Cart = () => {
   const cart = useContext(CartContext);
   const hasItems = cart.items.length > 0;
 
-  const addItemToCart = () => {
-    console.log('Item added...');
+  const addItemToCart = (item) => {
+    cart.addItem({
+      ...item,
+      amount: 1,
+    });
   };
+
   const removeItemFromCart = (ID) => {
-    console.log('Item Removed...', ID);
+    cart.removeItem(ID);
   };
 
   const cartItems = (
     <ul className={classes['cart-items']}>
       {cart.items.map((item) => (
         <CartItem
+          key={uuidv4()}
           name={item.name}
           price={item.price}
           amount={item.amount}
-          onAdd={addItemToCart}
-          onRemove={() => removeItemFromCart(item.ID)}
-          key={uuidv4()}
+          onAdd={addItemToCart.bind(null, item)}
+          onRemove={removeItemFromCart.bind(null, item.ID)}
         />
       ))}
     </ul>
   );
-
-  const totalAmountInCart = cart.items.reduce((current, item) => {
-    return current + item.price;
-  }, 0);
 
   return (
     <>
@@ -44,7 +44,7 @@ const Cart = () => {
           {cartItems}
           <div className={classes.total}>
             <span>Total amount: </span>
-            <span>N{totalAmountInCart}</span>
+            <span>N{cart.totalAmount}</span>
           </div>
           <div className={classes.actions}>
             <button

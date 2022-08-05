@@ -1,5 +1,4 @@
 import { useContext, useRef } from 'react';
-import { v4 as uuidv4 } from 'uuid';
 import CartContext from '../../../context/CartContext';
 import Input from '../../UI/Input';
 import classes from './MealItemForm.module.css';
@@ -20,13 +19,13 @@ const MealItemForm = (props) => {
 
     if (mealAmount !== '' && +mealAmount > 0) {
       cart.addItem({
-        ID: uuidv4(),
+        ID: props.ID,
         name: mealName,
         amount: +mealAmount,
         price: parseInt(mealPrice),
       });
     } else {
-      console.log('Amount cannot be blank or less than 1');
+      // TODO - { ERROR MODAL HERE } --'Amount cannot be blank or less than 1'
     }
 
     e.preventDefault();

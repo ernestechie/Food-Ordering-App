@@ -1,32 +1,31 @@
-import { v4 as uuidv4 } from 'uuid';
 import Card from '../UI/Card';
 import MealItem from './MealItem/MealItem';
 import classes from './AvailableMeals.module.css';
 
 const DUMMY_MEALS = [
   {
-    id: uuidv4(),
+    id: 'meal-1',
     name: 'Beef Shawarma',
     description: 'Beef & Sausage, Cabbage, Mayo, Spice',
-    price: 1799.99,
+    price: 1800,
   },
   {
-    id: uuidv4(),
+    id: 'meal-2',
     name: 'Small Pepperoni Pizza',
     description: 'Pepperoni spice, Pizza beef, Sausage',
-    price: 4999.99,
+    price: 4900,
   },
   {
-    id: uuidv4(),
+    id: 'meal-3',
     name: 'Barbecue Burger',
     description: 'American, raw, meaty',
-    price: 2499.99,
+    price: 2500,
   },
   {
-    id: 'm4',
+    id: 'meal-4',
     name: 'Green Bowl Parfait',
     description: 'Yoghurt, Healthy..Leafy and green...',
-    price: 4499.99,
+    price: 4500,
   },
 ];
 
@@ -37,6 +36,7 @@ const AvailableMeals = () => {
       name={meal.name}
       description={meal.description}
       price={meal.price}
+      ID={meal.id}
     />
   ));
 
