@@ -1,0 +1,22 @@
+{
+  "meal-1": {
+    "name": "Beef Shawarma",
+    "description": "Beef & Sausage, Cabbage, Mayo, Spice",
+    "price": "1800"
+  },
+  "meal-2": {
+    "name": "Small Pepperoni Pizza",
+    "description": "Pepperoni spice, Pizza beef, Sausage",
+    "price": 4900
+  },
+  "meal-3": {
+    "name": "Barbecue Burger",
+    "description": "American, raw, meaty",
+    "price": 2500
+  },
+  "meal-4": {
+    "name": "Green Bowl Parfait",
+    "description": "Yoghurt, Healthy..Leafy and green...",
+    "price": 4500
+  }
+}

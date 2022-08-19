@@ -6,11 +6,17 @@ const ModalProvider = ({ children }) => {
   const [showModal, setShowModal] = useState(false);
 
   const toggleModal = (prev) => {
-    setShowModal(() => !prev);
+    setShowModal((prev) => !prev);
   };
 
   return (
-    <ModalContext.Provider value={{ showModal, toggleModal, setShowModal }}>
+    <ModalContext.Provider
+      value={{
+        showModal,
+        toggleModal,
+        setShowModal,
+      }}
+    >
       {children}
     </ModalContext.Provider>
   );

@@ -1,8 +1,8 @@
 import { useContext, useEffect, useState } from 'react';
+import CartContext from '../../context/CartContext';
+import ModalContext from '../../context/ModalContext';
 import CartIcon from '../Cart/CartIcon';
 import classes from './HeaderCartButton.module.css';
-import ModalContext from '../../context/ModalContext';
-import CartContext from '../../context/CartContext';
 
 const HeaderCartButton = () => {
   const cart = useContext(CartContext);

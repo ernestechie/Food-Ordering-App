@@ -1,36 +1,46 @@
+import { useCallback, useEffect, useState } from 'react';
+import BusyIndicator from '../BusyIndicator';
 import Card from '../UI/Card';
-import MealItem from './MealItem/MealItem';
 import classes from './AvailableMeals.module.css';
-
-const DUMMY_MEALS = [
-  {
-    id: 'meal-1',
-    name: 'Beef Shawarma',
-    description: 'Beef & Sausage, Cabbage, Mayo, Spice',
-    price: 1800,
-  },
-  {
-    id: 'meal-2',
-    name: 'Small Pepperoni Pizza',
-    description: 'Pepperoni spice, Pizza beef, Sausage',
-    price: 4900,
-  },
-  {
-    id: 'meal-3',
-    name: 'Barbecue Burger',
-    description: 'American, raw, meaty',
-    price: 2500,
-  },
-  {
-    id: 'meal-4',
-    name: 'Green Bowl Parfait',
-    description: 'Yoghurt, Healthy..Leafy and green...',
-    price: 4500,
-  },
-];
+import MealItem from './MealItem/MealItem';
 
 const AvailableMeals = () => {
-  const mealsList = DUMMY_MEALS.map((meal) => (
+  const [meals, setMeals] = useState([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(null);
+
+  const fetchMeals = useCallback(async () => {
+    setIsLoading(true);
+    try {
+      const request = await fetch(
+        'https://food-order-app-c8c8d-default-rtdb.firebaseio.com/meals.json'
+      );
+
+      const response = await request.json();
+      let meals = [];
+
+      for (const key in response) {
+        meals.push({
+          id: key,
+          name: response[key].name,
+          description: response[key].description,
+          price: +response[key].price,
+        });
+      }
+
+      setMeals(meals);
+      setIsLoading(false);
+    } catch (error) {
+      setError('Something went wrong');
+      setIsLoading(false);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchMeals();
+  }, [fetchMeals]);
+
+  const mealsList = meals.map((meal) => (
     <MealItem
       key={meal.id}
       name={meal.name}
@@ -43,7 +53,14 @@ const AvailableMeals = () => {
   return (
     <section className={classes.meals}>
       <Card>
-        <ul>{mealsList}</ul>
+        {meals.length > 0 && !isLoading && <ul>{mealsList}</ul>}
+        {!meals.length > 0 && !isLoading && !error && (
+          <h2>No meals available</h2>
+        )}
+        {isLoading && !error && <BusyIndicator />}
+        {error && !isLoading ? (
+          <h3 style={{ color: 'red' }}>Something went wrong</h3>
+        ) : null}
       </Card>
     </section>
   );
