@@ -32,6 +32,25 @@ const Cart = () => {
     setIsCheckout(false);
   };
 
+  const submitOrderHandler = (user) => {
+    const data = {
+      userInfo: { ...user },
+      cartItems: { items: cart.items, totalAmount: cart.totalAmount },
+    };
+    fetch(
+      'https://food-order-app-c8c8d-default-rtdb.firebaseio.com/orders.json',
+      {
+        method: 'POST',
+        body: JSON.stringify(data),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      }
+    )
+      .then((response) => console.log(response))
+      .catch((error) => console.log(error));
+  };
+
   const cartItems = (
     <ul className={classes['cart-items']}>
       {cart.items.map((item) => (
@@ -56,7 +75,12 @@ const Cart = () => {
             <span>Total amount: </span>
             <span>N{cart.totalAmount}</span>
           </div>
-          {isCheckout && <Checkout cancelOrder={cancelOrderHandler} />}
+          {isCheckout && (
+            <Checkout
+              cancelOrder={cancelOrderHandler}
+              submitOrderHandler={submitOrderHandler}
+            />
+          )}
           <>
             {!isCheckout && (
               <div className={classes.actions}>

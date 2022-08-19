@@ -1,29 +1,131 @@
+import { useRef, useState } from 'react';
 import classes from './Checkout.module.css';
 
+const isEmpty = (value) => value.trim() === '';
+const isFiveChars = (value) => value.trim().length === 6;
+
 const Checkout = (props) => {
+  const [formIsValid, setFormIsValid] = useState({
+    name: false,
+    street: false,
+    city: false,
+    postal: false,
+  });
+  const nameInputRef = useRef('');
+  const streetInputRef = useRef('');
+  const postalInputRef = useRef('');
+  const cityInputRef = useRef('');
+
+  const confirmHandler = (e) => {
+    e.preventDefault();
+
+    const enteredName = nameInputRef.current.value;
+    const enteredStreet = streetInputRef.current.value;
+    const enteredPostal = postalInputRef.current.value;
+    const enteredCity = cityInputRef.current.value;
+
+    const enteredNameIsValid = isEmpty(enteredName);
+    const enteredStreetIsValid = isEmpty(enteredStreet);
+    const enteredPostalIsValid = !isFiveChars(enteredPostal);
+    const enteredCityIsValid = isEmpty(enteredCity);
+
+    setFormIsValid({
+      name: enteredNameIsValid,
+      street: enteredStreetIsValid,
+      postal: enteredPostalIsValid,
+      city: enteredCityIsValid,
+    });
+
+    const formValid =
+      enteredNameIsValid &&
+      enteredStreetIsValid &&
+      enteredPostalIsValid &&
+      enteredCityIsValid;
+
+    props.submitOrderHandler({
+      name: enteredName,
+      street: enteredStreet,
+      postal: enteredPostal,
+      city: enteredCity,
+    });
+
+    if (!formValid) {
+      return;
+    }
+  };
+
   return (
-    <form>
-      <div className={classes.control}>
+    <form onSubmit={confirmHandler} className={classes.form}>
+      <div
+        className={`${classes.control} ${formIsValid.name && classes.invalid}`}
+      >
         <label htmlFor='name'>Name:</label>
-        <input type='text' id='name' placeholder='Your Name...' />
+        <input
+          type='text'
+          id='name'
+          placeholder='Your Name...'
+          ref={nameInputRef}
+        />
+        {formIsValid.name && <p style={{ color: 'red' }}>Enter a valid name</p>}
       </div>
-      <div className={classes.control}>
+      <div
+        className={`${classes.control} ${
+          formIsValid.street && classes.invalid
+        }`}
+      >
         <label htmlFor='street'>Street:</label>
-        <input type='text' id='street' placeholder='Your Street...' />
+        <input
+          type='text'
+          id='street'
+          placeholder='Your Street...'
+          ref={streetInputRef}
+        />
+        {formIsValid.street && (
+          <p style={{ color: 'red' }}>Enter a valid street</p>
+        )}
       </div>
-      <div className={classes.control}>
+      <div
+        className={`${classes.control} ${
+          formIsValid.postal && classes.invalid
+        }`}
+      >
         <label htmlFor='postal'>Postal Code:</label>
-        <input type='text' id='postal' placeholder='Your Postal Code...' />
+        <input
+          type='text'
+          id='postal'
+          placeholder='Your Postal Code...'
+          ref={postalInputRef}
+        />
+        {formIsValid.postal && (
+          <p style={{ color: 'red' }}>Invalid. Must be 6 digits</p>
+        )}
       </div>
-      <div className={classes.control}>
+      <div
+        className={`${classes.control} ${formIsValid.city && classes.invalid}`}
+      >
         <label htmlFor='city'>City:</label>
-        <input type='text' id='city' placeholder='Your City...' />
+        <input
+          type='text'
+          id='city'
+          placeholder='Your City...'
+          ref={cityInputRef}
+        />
+        {formIsValid.city && (
+          <p style={{ color: 'red' }}>Entered a valid city</p>
+        )}
       </div>
-      <button type='button' onClick={props.cancelOrder}>
-        Cancel
-      </button>{' '}
-      <span></span>
-      <button type='submit'>Confirm</button>
+      <div className={classes.actions}>
+        <button type='button' onClick={props.cancelOrder}>
+          Cancel
+        </button>
+        <button
+          type='submit'
+          className={classes.submit}
+          onClick={confirmHandler}
+        >
+          Confirm
+        </button>
+      </div>
     </form>
   );
 };
