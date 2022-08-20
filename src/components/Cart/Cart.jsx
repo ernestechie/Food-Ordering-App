@@ -2,6 +2,7 @@ import { useContext, useState } from 'react';
 import { v4 as uuidv4 } from 'uuid';
 import CartContext from '../../context/CartContext';
 import ModalContext from '../../context/ModalContext';
+import BusyIndicator from '../BusyIndicator';
 import Modal from '../UI/Modal';
 import classes from './Cart.module.css';
 import CartItem from './CartItem';
@@ -11,7 +12,11 @@ const Cart = () => {
   const { showModal, toggleModal } = useContext(ModalContext);
   const cart = useContext(CartContext);
   const hasItems = cart.items.length > 0;
+
   const [isCheckout, setIsCheckout] = useState(false);
+  const [isSubmitting, setIsSubmitting] = useState(false);
+  const [submitted, setSubmitted] = useState(false);
+  const [error, setError] = useState(null);
 
   const addItemToCart = (item) => {
     cart.addItem({
@@ -28,11 +33,18 @@ const Cart = () => {
     setIsCheckout(true);
   };
 
+  const clearCart = (value) => {
+    value.forEach((item) => {
+      cart.removeItem(item.ID);
+    });
+  };
+
   const cancelOrderHandler = () => {
     setIsCheckout(false);
   };
 
   const submitOrderHandler = (user) => {
+    setIsSubmitting(true);
     const data = {
       userInfo: { ...user },
       cartItems: { items: cart.items, totalAmount: cart.totalAmount },
@@ -47,8 +59,25 @@ const Cart = () => {
         },
       }
     )
-      .then((response) => console.log(response))
-      .catch((error) => console.log(error));
+      .then(() => {
+        setError(null);
+        setSubmitted(true);
+        setIsCheckout(false);
+        setIsSubmitting(false);
+
+        clearCart(cart);
+
+        setTimeout(() => {
+          setSubmitted(null);
+        }, 2000);
+      })
+      .catch(() => {
+        setTimeout(() => {
+          setError('Something went wrong');
+        }, 500);
+        setSubmitted(false);
+        setIsSubmitting(false);
+      });
   };
 
   const cartItems = (
@@ -66,38 +95,52 @@ const Cart = () => {
     </ul>
   );
 
+  const cartModalContent = (
+    <>
+      {cartItems}
+      <>
+        <div className={classes.total}>
+          <span>Total amount: </span>
+          <span>N{cart.totalAmount}</span>
+        </div>
+        <>{error && <h2 style={{ color: 'red' }}>{error}</h2>}</>
+        {isCheckout && (
+          <Checkout
+            cancelOrder={cancelOrderHandler}
+            submitOrderHandler={submitOrderHandler}
+          />
+        )}
+      </>
+      <>
+        {!isCheckout && (
+          <div className={classes.actions}>
+            <button
+              className={classes['button--alt']}
+              onClick={() => toggleModal(showModal)}
+            >
+              Close
+            </button>
+            {hasItems && !isCheckout && (
+              <button className={classes.button} onClick={checkoutHandler}>
+                Order
+              </button>
+            )}
+          </div>
+        )}
+      </>
+    </>
+  );
+
+  const isSubmittingModalContent = <BusyIndicator />;
+  const submittedContent = <h1 style={{ color: 'green' }}>Order placed</h1>;
+
   return (
     <>
       {showModal && (
         <Modal>
-          {cartItems}
-          <div className={classes.total}>
-            <span>Total amount: </span>
-            <span>N{cart.totalAmount}</span>
-          </div>
-          {isCheckout && (
-            <Checkout
-              cancelOrder={cancelOrderHandler}
-              submitOrderHandler={submitOrderHandler}
-            />
-          )}
-          <>
-            {!isCheckout && (
-              <div className={classes.actions}>
-                <button
-                  className={classes['button--alt']}
-                  onClick={() => toggleModal(showModal)}
-                >
-                  Close
-                </button>
-                {hasItems && !isCheckout && (
-                  <button className={classes.button} onClick={checkoutHandler}>
-                    Order
-                  </button>
-                )}
-              </div>
-            )}
-          </>
+          <>{!isSubmitting && cartModalContent}</>
+          <>{submitted && submittedContent}</>
+          <>{isSubmitting && isSubmittingModalContent}</>
         </Modal>
       )}
     </>
