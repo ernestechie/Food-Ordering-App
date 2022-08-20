@@ -65,15 +65,22 @@ const Cart = () => {
         setIsCheckout(false);
         setIsSubmitting(false);
 
-        clearCart(cart);
-
         setTimeout(() => {
           setSubmitted(null);
+
+          setTimeout(() => {
+            clearCart(cart.items);
+          }, 1000);
         }, 2000);
       })
+
       .catch(() => {
         setTimeout(() => {
           setError('Something went wrong');
+
+          setTimeout(() => {
+            setError(null);
+          }, 2000);
         }, 500);
         setSubmitted(false);
         setIsSubmitting(false);
@@ -132,7 +139,7 @@ const Cart = () => {
   );
 
   const isSubmittingModalContent = <BusyIndicator />;
-  const submittedContent = <h1 style={{ color: 'green' }}>Order placed</h1>;
+  const submittedContent = <h2 style={{ color: 'green' }}>Order placed</h2>;
 
   return (
     <>
